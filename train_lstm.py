@@ -14,7 +14,7 @@ n_hidden   = 512
 n_layers   = 2
 drop1      = 0.3
 drop2      = 0.5
-lr         = 10e-3
+LR         = 10e-3
 
 '''Set the random seeds for deterministic results'''
 SEED = 1234
@@ -36,17 +36,17 @@ train_l, test_l = DataLoader(train_,batch_size=batch_size),DataLoader(test_,batc
 
 
 model = RNN_forward(input_dim=len(dataset.dict_)+1,emb_dim=EMBED_DIM,hid_dim=n_hidden,n_layers=n_layers,dropout=drop1)
+opt   = torch.optim.Adam(model.parameters(),lr=LR)
 
 
-for input_seq,target_seq,mask in train_l:
-    break
+for i,(input_seq,target_seq,mask) in enumerate(train_l):
 
-pred = model(input_seq)
-
-print(target_seq[10,:])
-print(loss_(pred,target_seq,mask)[10,:])
-
-
+    opt.zero_grad()
+    pred = model(input_seq)
+    l    = torch.mean(torch.sum(loss_(pred,target_seq,mask), dim=-1))
+    l.backward()
+    opt.step()
 
 
+    print('Train loss = {}'.format(l))
 
