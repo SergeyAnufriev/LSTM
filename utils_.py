@@ -1,4 +1,5 @@
 import torch
+from torch.nn.functional import softmax
 
 losses = torch.nn.CrossEntropyLoss(reduction='none')
 
@@ -39,3 +40,15 @@ def test_loss(test_l,model):
         losses += l
 
     return losses/len(test_l)
+
+
+def softmax_temp(y_t,temperature):
+    '''Input:
+    1) y_t unnormilised logits for the next symbols
+    2) temperature - sampling temperature
+    Return:
+        next token
+    https://pytorch-nlp-tutorial-ny2018.readthedocs.io/en/latest/day2/sampling.html'''
+
+    prob = softmax(y_t/temperature,dim=-1)
+    return torch.multinomial(prob,1)[0]
