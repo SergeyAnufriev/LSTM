@@ -27,7 +27,7 @@ if torch.cuda.is_available():
 
 dir_dataset     = r'C:\Users\zcemg08\PycharmProjects\LSTM\data\qm9_smiles.txt'
 dataset         = Dataset_(dir_dataset)
-train_size      = int(len(dataset)*0.8)
+train_size      = int(len(dataset)*0.99)
 test_size       = len(dataset) - train_size
 print('Train size ={}, Test size ={}'.format(train_size,test_size))
 
@@ -38,7 +38,7 @@ train_l, test_l = DataLoader(train_,batch_size=batch_size),DataLoader(test_,batc
 model = RNN_forward(input_dim=len(dataset.dict_)+1,emb_dim=EMBED_DIM,hid_dim=n_hidden,n_layers=n_layers,dropout=drop1)
 opt   = torch.optim.Adam(model.parameters(),lr=LR)
 
-
+'''
 for i,(input_seq,target_seq,mask) in enumerate(train_l):
 
     opt.zero_grad()
@@ -49,4 +49,5 @@ for i,(input_seq,target_seq,mask) in enumerate(train_l):
 
 
     print('Train loss = {}'.format(l))
+'''
 

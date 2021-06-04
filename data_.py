@@ -4,13 +4,14 @@ import torch
 
 
 class Dataset_(Dataset):
-    def __init__(self,dir_):
+    def __init__(self,dir_,device):
 
         self.df       = pd.read_csv(dir_,sep=" ",header=None)
         self.df['l']  = self.df.iloc[:,0].apply(lambda x:len(x))
         self.max_l    = max(self.df['l'].values)
         self.dict_    = self.pandas_to_dict()
         self.dict_inv = {value: key for key, value in self.dict_.items()}
+        self.device   = device
 
     def __len__(self):
         return len(self.df)
@@ -47,9 +48,9 @@ class Dataset_(Dataset):
                  which contains (0 if pad otherwise 1)'''
         pad_l   =   self.max_l - x
         if pad_l > 0:
-            mask = torch.tensor([1.]*(x+1) + [0.]*pad_l,dtype=torch.float32)
+            mask = torch.tensor([1.]*(x+1) + [0.]*pad_l,dtype=torch.float32,requires_grad=False,device=self.device)
         else:
-            mask = torch.tensor([1.]*(x+1),dtype=torch.float32)
+            mask = torch.tensor([1.]*(x+1),dtype=torch.float32,requires_grad=False,device=self.device)
         return mask
 
     def __getitem__(self,idx):
@@ -60,8 +61,8 @@ class Dataset_(Dataset):
 
         smiles      = self.df.iloc[:,0][idx]
         seq         = self.seq_(smiles)
-        target_seq_ = torch.tensor(seq[1:],dtype=torch.long)
-        input_seq   = torch.tensor(seq[:-1],dtype=torch.long)
+        target_seq_ = torch.tensor(seq[1:],dtype=torch.long,device=self.device)
+        input_seq   = torch.tensor(seq[:-1],dtype=torch.long,device=self.device)
 
 
         return input_seq, target_seq_, self.msk_(len(smiles))
