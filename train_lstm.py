@@ -5,7 +5,7 @@ from torch.utils.data import DataLoader,random_split
 '''Custom modules'''
 from data_ import Dataset_
 from model_ import RNN_forward
-from utils_ import loss_
+from utils_ import loss_,test_loss
 
 '''Model parameters'''
 EMBED_DIM  = 100
@@ -25,9 +25,10 @@ if torch.cuda.is_available():
     torch.cuda.manual_seed(SEED)
     torch.backends.cudnn.deterministic = True
 
+device          = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 dir_dataset     = r'C:\Users\zcemg08\PycharmProjects\LSTM\data\qm9_smiles.txt'
-dataset         = Dataset_(dir_dataset)
-train_size      = int(len(dataset)*0.99)
+dataset         = Dataset_(dir_dataset,device)
+train_size      = int(len(dataset)*0.8)
 test_size       = len(dataset) - train_size
 print('Train size ={}, Test size ={}'.format(train_size,test_size))
 
@@ -36,18 +37,19 @@ train_l, test_l = DataLoader(train_,batch_size=batch_size),DataLoader(test_,batc
 
 
 model = RNN_forward(input_dim=len(dataset.dict_)+1,emb_dim=EMBED_DIM,hid_dim=n_hidden,n_layers=n_layers,dropout=drop1)
+model.to(device)
 opt   = torch.optim.Adam(model.parameters(),lr=LR)
 
-'''
-for i,(input_seq,target_seq,mask) in enumerate(train_l):
+for _ in range(10):
+    for i, (input_seq, target_seq, mask) in enumerate(train_l):
 
-    opt.zero_grad()
-    pred = model(input_seq)
-    l    = torch.mean(torch.sum(loss_(pred,target_seq,mask), dim=-1))
-    l.backward()
-    opt.step()
+        '''https://discuss.pytorch.org/t/pytorch-cudnn-rnn-backward-can-only-be-called-in-training-mode/80080/5'''
+        model.train()
+        opt.zero_grad()
+        pred = model(input_seq)
+        l = loss_(pred, target_seq, mask)
+        l.backward()
+        opt.step()
 
-
-    print('Train loss = {}'.format(l))
-'''
-
+        if i % int(len(train_l) / 5) == 0:
+            print('Train loss = {}, Test loss ={}'.format(l, test_loss(test_l, model)))
