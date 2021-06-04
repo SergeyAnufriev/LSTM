@@ -20,10 +20,10 @@ class RNN_forward(nn.Module):
 
         '''Change embedded size to [seq_len * batch * embed_dim] (for RNN)
                      Output size = [seq_len * batch * hid_dim]'''
-        outputs, (_, _) = self.rnn(embedded.permute(1, 0, 2))
+        outputs, (h_n, c_n) = self.rnn(embedded.permute(1, 0, 2))
 
         '''Apply linear layer to RNN outputs
         prediction size = [seq_len * batch * vocab_size ]'''
         prediction = self.linear(outputs.squeeze(0))
 
-        return prediction
+        return prediction, h_n, c_n

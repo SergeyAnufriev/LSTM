@@ -34,8 +34,8 @@ def test_loss(test_l,model):
 
     for input_seq, target_seq, mask in test_l:
 
-        pred   = model(input_seq)
-        l      = loss_(pred,target_seq,mask)
+        pred,_,_   = model(input_seq)
+        l          = loss_(pred,target_seq,mask)
         losses += l
 
     return losses/len(test_l)

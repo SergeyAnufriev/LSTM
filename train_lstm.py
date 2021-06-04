@@ -40,13 +40,14 @@ model = RNN_forward(input_dim=len(dataset.dict_)+1,emb_dim=EMBED_DIM,hid_dim=n_h
 model.to(device)
 opt   = torch.optim.Adam(model.parameters(),lr=LR)
 
+'''Takes 55min to train for 10 epochs in colab'''
 for _ in range(10):
     for i, (input_seq, target_seq, mask) in enumerate(train_l):
 
         '''https://discuss.pytorch.org/t/pytorch-cudnn-rnn-backward-can-only-be-called-in-training-mode/80080/5'''
         model.train()
         opt.zero_grad()
-        pred = model(input_seq)
+        pred,_,_ = model(input_seq)
         l = loss_(pred, target_seq, mask)
         l.backward()
         opt.step()
