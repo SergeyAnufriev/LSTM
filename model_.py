@@ -13,9 +13,6 @@ class RNN_forward(nn.Module):
         self.dropout   = nn.Dropout(dropout)
         self.linear    = nn.Linear(hid_dim, input_dim)
 
-
-
-
     def forward(self,src,hidden):
         '''Input: input
         1) sequence with size = [batch * seq_len]
@@ -37,7 +34,7 @@ class RNN_forward(nn.Module):
     def init_hidden_(self,batch_size,device):
         '''Initialise hidden and cell states'''
 
-        h_0 = torch.zeros([self.n_layers,batch_size,self.n_hidden],device=device)
-        c_0 = torch.zeros([self.n_layers,batch_size,self.n_hidden],device=device)
+        h_0 = torch.zeros([self.n_layers,batch_size,self.hid_dim],device=device)
+        c_0 = torch.zeros([self.n_layers,batch_size,self.hid_dim],device=device)
 
         return h_0,c_0
