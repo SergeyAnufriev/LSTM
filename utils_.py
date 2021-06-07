@@ -24,7 +24,7 @@ def loss_(logits,target,mask):
 
 
 
-def test_loss(test_l,model):
+def test_loss(test_l,model,batch_size,device):
     '''Input:
     1) test_l - test data loader
     2) model  - model to be tested]
@@ -32,10 +32,11 @@ def test_loss(test_l,model):
 
     model.eval()
     losses = 0
+    hidden = model.init_hidden_(batch_size, device)
 
     for input_seq, target_seq, mask in test_l:
 
-        pred,_,_   = model(input_seq)
+        pred,_,_   = model(input_seq,hidden)
         l          = loss_(pred,target_seq,mask)
         losses += l
 
