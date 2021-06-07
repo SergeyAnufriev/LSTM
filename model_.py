@@ -3,7 +3,7 @@ import torch.nn as nn
 
 
 class RNN_forward(nn.Module):
-    def __init__(self, input_dim, emb_dim, hid_dim, n_layers, dropout,device):
+    def __init__(self, input_dim, emb_dim, hid_dim, n_layers, dropout):
         super().__init__()
 
         self.hid_dim   = hid_dim
@@ -14,7 +14,7 @@ class RNN_forward(nn.Module):
         self.linear    = nn.Linear(hid_dim, input_dim)
 
 
-        self.device = device
+
 
     def forward(self,src,hidden):
         '''Input: input
@@ -34,10 +34,10 @@ class RNN_forward(nn.Module):
 
         return prediction, h_n, c_n
 
-    def init_hidden_(self,batch_size):
+    def init_hidden_(self,batch_size,device):
         '''Initialise hidden and cell states'''
 
-        h_0 = torch.zeros([self.n_layers,batch_size,self.n_hidden],device=self.device)
-        c_0 = torch.zeros([self.n_layers,batch_size,self.n_hidden],device=self.device)
+        h_0 = torch.zeros([self.n_layers,batch_size,self.n_hidden],device=device)
+        c_0 = torch.zeros([self.n_layers,batch_size,self.n_hidden],device=device)
 
         return h_0,c_0
