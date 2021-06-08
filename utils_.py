@@ -36,7 +36,7 @@ def test_loss(test_l,model,batch_size,device):
 
     for input_seq, target_seq, mask in test_l:
 
-        pred,_,_   = model(input_seq,hidden)
+        pred,_     = model(input_seq,hidden)
         l          = loss_(pred,target_seq,mask)
         losses += l
 
