@@ -29,7 +29,7 @@ class RNN_forward(nn.Module):
         prediction size = [seq_len * batch * vocab_size ]'''
         prediction = self.linear(outputs.squeeze(0))
 
-        return prediction, h_n, c_n
+        return prediction, (h_n, c_n)
 
     def init_hidden_(self,batch_size,device):
         '''Initialise hidden and cell states'''

@@ -53,3 +53,23 @@ def softmax_temp(y_t,temperature):
 
     prob = softmax(y_t/temperature,dim=-1)
     return torch.multinomial(prob,1)[0]
+
+
+def sample_(model,temperature,dataset,device):
+    '''Input:
+        1) y_t unnormilised logits for the next symbols
+        2) temperature - sampling temperature
+        Return:
+            next token
+        https://pytorch-nlp-tutorial-ny2018.readthedocs.io/en/latest/day2/sampling.html'''
+    hidden = model.init_hidden_(1, device)
+    x = torch.tensor([dataset.dict_['G']], dtype=torch.long, device=device).unsqueeze(0)
+    sequence = []
+    for i in range(100):
+        logits, hidden = model(x,hidden)
+        prob           = softmax(logits / temperature, dim=-1)
+        x              = torch.multinomial(prob, 1)[0].unsqueeze(0)
+        sequence.append(x[0][0])
+
+
+
