@@ -34,7 +34,7 @@ class RNN_forward(nn.Module):
     def init_hidden_(self,batch_size,device):
         '''Initialise hidden and cell states'''
 
-        h_0 = torch.zeros([self.n_layers,batch_size,self.hid_dim],device=device)
-        c_0 = torch.zeros([self.n_layers,batch_size,self.hid_dim],device=device)
+        h_0 = torch.zeros((self.n_layers,batch_size,self.hid_dim),device=device)
+        c_0 = torch.zeros((self.n_layers,batch_size,self.hid_dim),device=device)
 
         return h_0,c_0
