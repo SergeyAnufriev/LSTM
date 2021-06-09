@@ -1,5 +1,6 @@
 import torch
 from torch.nn.functional import softmax
+import numpy as np
 
 losses = torch.nn.CrossEntropyLoss(reduction='none')
 
@@ -55,21 +56,31 @@ def softmax_temp(y_t,temperature):
     return torch.multinomial(prob,1)[0]
 
 
-def sample_(model,temperature,dataset,device):
+def sample_(model,n_molecules,temperature,dataset,device,seq_len=100):
     '''Input:
         1) y_t unnormilised logits for the next symbols
         2) temperature - sampling temperature
         Return:
             next token
         https://pytorch-nlp-tutorial-ny2018.readthedocs.io/en/latest/day2/sampling.html'''
-    hidden = model.init_hidden_(1, device)
-    x = torch.tensor([dataset.dict_['G']], dtype=torch.long, device=device).unsqueeze(0)
-    sequence = []
-    for i in range(100):
+    model.eval()
+    hidden = model.init_hidden_(n_molecules, device)
+    x      = torch.tensor([dataset.dict_['G']]*n_molecules, dtype=torch.long, device=device).unsqueeze(0).permute(1,0)
+    seq    = torch.ones((n_molecules,1), device=device)
+
+    for i in range(seq_len):
         logits, hidden = model(x,hidden)
         prob           = softmax(logits / temperature, dim=-1)
-        x              = torch.multinomial(prob, 1)[0].unsqueeze(0)
-        sequence.append(x[0][0])
+        x              = torch.multinomial(prob, 1)
+        seq            = torch.hstack([seq,x])
+
+    matrix      =  np.vectorize(dataset.dict_inv.get)(seq.detach().cpu().numpy()[:,1:])
+    smiles_list = []
+    for i in range(n_molecules):
+        string_ = ''.join(list(matrix[i, :]))
+        smiles_list.append(string_.split('E')[0])
+
+    return smiles_list
 
 
 def get_children(model: torch.nn.Module):
