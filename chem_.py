@@ -1,8 +1,16 @@
 from rdkit import Chem
 import numpy as np
 
-def substructure(mol,fragment='CC(C)=O'):
-    return mol.GetSubstructMatches(Chem.MolFromSmiles(fragment))
+def substructure(s,fragment='CC(C)=O'):
+    try:
+      mol = Chem.MolFromSmiles(s)
+      l = mol.GetSubstructMatches(Chem.MolFromSmiles(fragment))
+      if len(l)>0:
+        return 1
+      else:
+        return 0
+    except:
+      return 0
 
 def valid_(smiles):
   try:
