@@ -1,6 +1,7 @@
 import torch
 from torch.nn.functional import softmax
 import numpy as np
+from rdkit import Chem
 
 losses = torch.nn.CrossEntropyLoss(reduction='none')
 
@@ -80,6 +81,37 @@ def sample_(model,n_molecules,temperature,dict_,dict_inv,device,seq_len=100):
         smiles_list.append(string_.split('E')[0])
 
     return smiles_list
+
+def valid_(smi):
+
+  '''Input: smiles string
+  output binary: 1-valid, 0-not valid molecule'''
+
+  m = Chem.MolFromSmiles(smi,sanitize=False)
+  if m is None:
+    return 0
+  else:
+    try:
+      mol = Chem.SanitizeMol(m)
+      return 1
+    except:
+      return 0
+
+def model_quality(sampled_molecules,data_molecules):
+
+    '''Input:
+    1) sampled_molecules: list of smiles strings generated
+    2) data_molecules: list of smiles strings in dataset
+
+    Return:
+        valid molecules %, unique molecules % and novel molecules %'''
+
+    valid_mols      = [x for x in sampled_molecules if valid_(x)==1]
+    unique_mols     = set(valid_mols)
+    novel_mols      = unique_mols-set(data_molecules)
+    S               = len(sampled_molecules)
+
+    return len(valid_mols)/S,len(unique_mols)/S,len(novel_mols)/S
 
 
 def get_children(model: torch.nn.Module):
