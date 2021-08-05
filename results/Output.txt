@@ -1,0 +1,11 @@
+Results at iter = 0: valid = 0.96,unique = 0.96, novel = 0.31
+Results at iter = 10: valid = 0.985,unique = 0.43, novel = 0.1
+Results at iter = 20: valid = 0.915,unique = 0.68, novel = 0.675
+Results at iter = 30: valid = 0.96,unique = 0.885, novel = 0.885
+Results at iter = 40: valid = 0.965,unique = 0.155, novel = 0.155
+Results at iter = 50: valid = 0.99,unique = 0.39, novel = 0.39
+Results at iter = 60: valid = 0.995,unique = 0.32, novel = 0.32
+Results at iter = 70: valid = 0.99,unique = 0.265, novel = 0.265
+Results at iter = 80: valid = 0.995,unique = 0.145, novel = 0.145
+Results at iter = 90: valid = 0.995,unique = 0.2, novel = 0.2
+Results at iter = 100: valid = 0.985,unique = 0.255, novel = 0.255

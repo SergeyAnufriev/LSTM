@@ -13,7 +13,7 @@ class RNN_forward(nn.Module):
         self.dropout   = nn.Dropout(dropout)
         self.linear    = nn.Linear(hid_dim, input_dim)
 
-        self.p1, self.p2  = self.network(input_dim,emb_dim, hid_dim,layer_norm)
+        #self.p1, self.p2  = self.network(input_dim,emb_dim, hid_dim,layer_norm)
 
     def network(self, input_dim,emb_dim, hid_dim,layer_norm):
         '''creates lstm network with/without layer normalisation'''
@@ -30,7 +30,7 @@ class RNN_forward(nn.Module):
 
         return nn.Sequential(*part1),nn.Sequential(*part2)
 
-    def forward(self,scr,hidden):
+    def forward_100(self,scr,hidden):
         '''Input: input
         1) sequence with size = [batch * seq_len]
         2) hidden state (h_0,c_0)'''
@@ -49,7 +49,7 @@ class RNN_forward(nn.Module):
         return prediction, (h_n, c_n)
 
 
-    def forward_100(self,src,hidden):
+    def forward(self,src,hidden):
         '''Input: input
         1) sequence with size = [batch * seq_len]
         2) hidden state (h_0,c_0)'''

@@ -1,5 +1,6 @@
 from rdkit import Chem
 import numpy as np
+from rdkit.Chem import Descriptors
 
 def substructure(s,fragment='CC(C)=O'):
     try:
@@ -30,6 +31,33 @@ def top_k_smiles(smiles,func,k=64):
     R = np.array([func(x) for x in smiles])
     indx = np.argsort(R)[-k:]
     return [smiles[x] for x in indx]
+
+
+def log_p(x):
+
+    '''Input SMILES string
+    return LogP value'''
+    if len(x) > 30:
+        return -10**3
+    else:
+        try:
+            mol = Chem.MolFromSmiles(x)
+            lp  = Descriptors.MolLogP(mol)
+            return lp
+        except:
+            return -10**3
+
+
+
+
+
+smiles_l = ['CO','CCC']
+
+print([log_p(x) for x in smiles_l])
+
+print(top_k_smiles(smiles_l,log_p,2))
+
+
 
 
 
