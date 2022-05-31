@@ -20,7 +20,7 @@ parameters:
   LR:
     values: [0.1,10e-3]
   epochs:
-    value: 10
+    value: 4
   temp:
     value: 1
 
