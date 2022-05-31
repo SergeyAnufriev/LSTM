@@ -18,7 +18,7 @@ parameters:
   batch_size:
     value: 64
   LR:
-    value: [0.1,10e-3]
+    values: [0.1,10e-3]
   epochs:
     value: 10
   temp:
