@@ -1,0 +1,29 @@
+program: lstm_molecules.py
+method:  grid
+project: LSTM_molecules
+description : sequential molecules generation
+parameters:
+  seed:
+    value: 1234
+  EMBED_DIM:
+    value: 100
+  n_hidden:
+    value: 512
+  n_layers:
+    value: 2
+  drop1:
+    value: 0.3
+  drop2:
+    value: 0.5
+  batch_size:
+    value: 64
+  LR:
+    value: [0.1,10e-3]
+  epochs:
+    value: 10
+  temp:
+    value: 1
+
+
+
+

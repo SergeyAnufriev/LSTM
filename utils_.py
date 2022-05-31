@@ -2,6 +2,7 @@ import torch
 from torch.nn.functional import softmax
 import numpy as np
 from rdkit import Chem
+import yaml
 
 losses = torch.nn.CrossEntropyLoss(reduction='none')
 
@@ -129,3 +130,21 @@ def get_children(model: torch.nn.Module):
             except TypeError:
                 flatt_children.append(get_children(child))
     return flatt_children
+
+
+
+def sweep_to_dict(dir):
+
+    '''Sets parameters values given experiment.yaml file'''
+
+    with open(dir) as file:
+        params = yaml.safe_load(file)
+    default_dict ={}
+    pr = params['parameters']
+    for k,v in pr.items():
+        if 'value' in v:
+            m = v['value']
+        else:
+            m = v['values'][0]
+        default_dict[k] = m
+    return default_dict
