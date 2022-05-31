@@ -75,14 +75,14 @@ def sample_(model,n_molecules,temperature,dataset,device,seq_len=100):
 
 for j in range(config.epochs):
     for i,(input_seq,target_seq,mask) in enumerate(train_l):
-
         model.train()
         opt.zero_grad()
         pred,_= model(input_seq,hidden)
         l        = loss_(pred,target_seq,mask)
         l.backward()
         opt.step()
-        wandb.log({'Train_Loss':l})
 
-
+    wandb.log({'Train_Loss':l,'epoch':j})
+    test_l = test_loss(test_l,model,config.batch_size,device)
+    wandb.log({'Test_loss':test_l,'epoch':j})
 
