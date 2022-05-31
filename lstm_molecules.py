@@ -37,7 +37,7 @@ test_size = len(dataset) - train_size
 print('Train size ={}, Test size ={}'.format(train_size,test_size))
 train_, test_ = random_split(dataset,[train_size,test_size],generator=torch.Generator().manual_seed(SEED))
 train_l, test_l = DataLoader(train_,batch_size=config.batch_size,drop_last=True),DataLoader(test_,batch_size=config.batch_size,drop_last=True)
-
+print('Train batches ={}'.format(len(train_l)))
 model = RNN_forward(input_dim=len(dataset.dict_)+1,emb_dim=config.EMBED_DIM,hid_dim=config.n_hidden, \
                     n_layers=config.n_layers,layer_norm=False,dropout=config.drop1)
 model.to(device)
@@ -72,6 +72,7 @@ def sample_(model,n_molecules,temperature,dataset,device,seq_len=100):
 
     return smiles_list
 
+counter = 0
 
 for j in range(config.epochs):
     for i,(input_seq,target_seq,mask) in enumerate(train_l):
@@ -82,7 +83,10 @@ for j in range(config.epochs):
         l.backward()
         opt.step()
 
-    wandb.log({'Train_Loss':l,'epoch':j})
-    test_l = test_loss(test_l,model,config.batch_size,device)
-    wandb.log({'Test_loss':test_l,'epoch':j})
+        '''Log train\test losses every 1/2 epoch'''
+        if counter%(int(len(train_l)/2)) == 0:
 
+            wandb.log({'Train_Loss':l,'epoch':round(counter/len(train_l),2)})
+            wandb.log({'Test_loss':test_loss(test_l,model,config.batch_size,device),'epoch':round(counter/len(train_l),2)})
+
+        counter+=1
